@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
@@ -9,11 +10,21 @@ import { RecipeService } from '../recipe.service';
   styleUrls: ['./recipe-detail.component.css']
 })
 export class RecipeDetailComponent implements OnInit {
-  @Input() recipe: Recipe;
+  recipe: Recipe;
+  id: number;
 
-  constructor(private recipeSerive: RecipeService) { }
+  constructor(private recipeSerive: RecipeService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
+    //fetch id from the route
+    this.route.params.subscribe(
+      (params: Params) => {
+        // + is to convert string to number ( of the id retrieved from url)
+        this.id = +params['id'];
+        this.recipe = this.recipeSerive.getRecipe(this.id);
+      }
+    )
   }
 
   onAddToShoppingList() {
